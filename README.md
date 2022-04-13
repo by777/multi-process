@@ -1,8 +1,8 @@
 # Python 并发编程实战，用多线程、多进程、多协程加速程序运行
 
-[视频链接]https://www.bilibili.com/video/BV1bK411A7tV?p=1
+[视频链接](https://www.bilibili.com/video/BV1bK411A7tV?p=1)
 
-Python线程、进程、协程的区别
+# Python线程、进程、协程的区别
 
 + 一个进程中可以启动多个线程
 + 一个线程中可以启动多个协程
@@ -37,8 +37,67 @@ Python线程、进程、协程的区别
 
 Python在特殊场景下，可能比C++慢100~200倍。
 
-queue.Queue是一个线程安全的通信队列
+```python
+# queue.Queue是一个线程安全的通信队列
+Queue.put()  # 添加元素
+item = Queue.get()  # 获取元素
+```
 
-Queue.put() # 添加元素
+# 线程安全：Lock用于解决线程安全问题
 
-item = Queue。get() # 获取元素
+```python
+import threading
+
+lock = threading.Lock
+lock.acquire()
+try:
+    pass
+finally:
+    lock.release()
+```
+
+方式二：
+
+```python
+import threading
+
+lock = threading.Lock
+with lock:
+    pass
+```
+
+# 线程池
+
+新建线程需要分配资源，终止线程需要回收资源。
+
+如果可以重用线程，则可以省去切换开销。
+
+线程池适合突发性大量请求，但实际任务处理时间短的任务。
+
+```python
+# 方式1，使用map，map的结果和入参时顺序对应的
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+with ThreadPoolExecutor() as pool:
+    results = pool.map(craw, urls)
+    for result in results:
+        print(result)
+
+```
+
+```python
+# 方式2，使用future模式，注意用as_completed顺序是不定的
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+with ThreadPoolExecutor() as pool:
+    futures = [
+        pool.submit(craw, url) for url in urls
+    ]
+    for future in futures:
+        # 按照url的顺序挨个获取结果
+        print(future.result())
+    for future in as_completed(futures):
+        # 按完成的顺序获取结果
+        print(future.result())
+
+```
