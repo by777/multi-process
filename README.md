@@ -101,3 +101,15 @@ with ThreadPoolExecutor() as pool:
         print(future.result())
 
 ```
+
+# flask_thread_pool
+
+```shell
+time curl http://127.0.0.1:5000/
+# {"result_file": "file result", "result_db": "db result", "result_api": "api result"}
+# real 0m1.356s
+# user 0m0.000s sys
+# 0m0.047s
+```
+
+
