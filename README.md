@@ -112,4 +112,35 @@ time curl http://127.0.0.1:5000/
 # 0m0.047s
 ```
 
+# 多进程multiprocess（适合cpu密集）
 
+python多线程不适合cpu密集型，
+
+multiprocess是python为了你补GIL缺陷的模块，
+
+原理是用多进程在多CPU上`并行执行`
+![img.png](img.png)
+
+# 协程
+
+在单线程内实现并发（一个超级循环while True）
+
+```python
+import asyncio
+
+# 获取时间循环
+loop = asyncio.get_event_loop()
+
+
+# 定义协程
+async def mufunc(url):
+    await get_url(url)
+
+
+# 创建task列表
+tasks = [loop.create_task(
+    mufunc(url=url) for url in urls
+)]
+# 创建爬虫事件列表
+loop.run_until_complete(asyncio.wait(tasks))
+```
