@@ -144,3 +144,38 @@ tasks = [loop.create_task(
 # 创建爬虫事件列表
 loop.run_until_complete(asyncio.wait(tasks))
 ```
+
+# 使用信号量（Semaphore）控制并发
+
+Semaphore是一个同步对象，用于保持0至最大值之间的几个计数值
+
+释放时+1，等待时-1
+
+计数值>0，signaled状态，表示还有线程可以进入
+
+，否则nosignaled
+
+```python
+import asyncio
+
+sem = asyncio.Semaphore(10)
+# ...later
+async with sem:
+    ...
+# work with shared resource
+
+```
+
+或者
+
+```python
+sem = asyncio.Semaphore(10)
+# ... later
+await sem.acquire()
+try:
+    pass
+    # work with shared resource
+finally:
+    sem.release()
+
+```
